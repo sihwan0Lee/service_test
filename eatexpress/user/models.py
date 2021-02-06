@@ -8,7 +8,8 @@ GENDER = (
 
 
 class User(AbstractUser):
-    #name = models.CharField(max_length=45, verbose_name='회원이름')
+    nickname = models.CharField(
+        max_length=45, unique=True, verbose_name='회원이름')
     email = models.EmailField(
         max_length=200, unique=True, null=True, verbose_name='이메일')
     password = models.CharField(max_length=100, verbose_name='비밀번호')

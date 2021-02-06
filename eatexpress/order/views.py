@@ -13,24 +13,27 @@ from eatexpress.decorator import member_verification
 
 class OrderMake(View):
     @member_verification
-    def post(self, request, order_id, product_id):
+    def post(self, request):
         data = json.loads(request.body)
-        user = request.user
-        # 주문id가 있는지, 없으면 주문id생성부터 (장바구니 생성)
+        user_id = request.userid
         try:
-            if Order.objects.filter(username_id=user):
-                if Product.objects.filter(id=product_id):
+            if Order.objects.filter(id=user_id).exists():
+                # if Product.objects.filter(id=product_id):
+                return JsonResponse({'message': '장바구니는 있네'}, status=200)
+                # new_order = OrderProduct(
 
-                    new_order = OrderProduct(
+                #   order=data['user_id'],
+                #  product=data['product_id'],
+                # quantity=data['quantity']
 
-                        order=data['order_id'],
-                        product=data['product_id'],
-                        quantity=data['quantity']
-
-                    )
-                    new_order.save()
+                # )
+                # new_order.save()
             else:
-                Order.objects.create(id=order_id, username_id=user.id)
+                new_order = Order(
+                    username_id=user_id
+                )
+                new_order.save()
+                return JsonResponse({'message': '장바구니가 생성됬습니다'}, status=200)
             return JsonResponse({'message': '장바구니를 먼저 생성하세요'}, status=200)
         # except IntegrityError:
             # return JsonResponse({"error": "이미 존재하는 회원정보"}, status=400)
