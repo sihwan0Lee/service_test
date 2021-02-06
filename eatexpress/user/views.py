@@ -71,40 +71,28 @@ class LogOut(View):
 
 
 class Myinfo(View):
-    # 해당 유저가 존재할시 해당유저 정보를 지우고 , 새로운 값을 저장하게 함.
     @member_verification
     def post(self, request):
-        user = request.user
-        if User.objects.filter(username=user).exists():
-            User.objects.get(username=user).delete()
+        user_id = request.userid
 
-        data = json.loads(request.body)
+        # 아이디(이메일)은 보통 수정못하는 점을 반영, 주문을 위한 주소변경을 중점으로 다룸.
         try:
-            if User.objects.filter(email=data['email']).exists():
-                return JsonResponse({"message": "이미 존재하는 이메일입니다"}, status=400)
-
-            password_crypt = bcrypt.hashpw(
-                data['password'].encode('utf-8'), bcrypt.gensalt())
-            password_crypt = password_crypt.decode('utf-8')
-
-            new_user = User(
-                # abstractuser 기본제공하는 username
-                username=data['username'],
-                email=data['email'],
-                password=password_crypt,
-                phone_number=data['phone_number'],
-                address=data['address'],
-                gender=['gender']
-            )
-            new_user.save()
-            return HttpResponse(status=200)
+            data = json.loads(request.body)
+            username = data['username']
+            # password=password_crypt,
+            phone_number = data['phone_number']
+            address = data['address']
+            if User.objects.filter(id=user_id).exists():
+                User.objects.filter(id=user_id).update(
+                    username=username, phone_number=phone_number, address=address)
+                return JsonResponse({"message": "유저정보가 변경되었습니다"}, status=200)
         except KeyError:
             return JsonResponse({'error': '올바르지 않은 키 값'}, status=400)
 
     @member_verification
     def get(self, request):
-        user = request.user
-        info = User.objects.get(username=user)
+        user_id = request.userid
+        info = User.objects.get(id=user_id)
         my_info = []
 
         j = {

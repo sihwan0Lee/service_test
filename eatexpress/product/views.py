@@ -12,7 +12,7 @@ from eatexpress.decorator import member_verification
 # Create your views here.
 
 
-class FindProduct(View):
+class ProductInfo(View):
     @member_verification
     def get(self, request, product_id):
         user = request.user
@@ -36,9 +36,29 @@ class FindProduct(View):
                     return JsonResponse({'error': '올바르지 않은 키 값'}, status=400)
             return JsonResponse({'error': '제한된 서비스'}, status=400)
 
+    @member_verification
+    def post(self, request, product_id):
+        user = request.user
+        if User.objects.filter(username=user).exists():
+            if user.level == 'admin':
+                try:
+                    data = json.loads(request.body)
+                    name = data['name']
+                    manufacturer = data['manufacturer']
+                    stock = data['stock']
+                    unit_price = data['unit_price']
+                    expiration_date = data['expiration_date']
+                    if Product.objects.filter(id=product_id).exists():
+                        Product.objects.filter(id=product_id).update(
+                            name=name, manufacturer=manufacturer, stock=stock, unit_price=unit_price, expiration_date=expiration_date)
+                        return JsonResponse({"message": "상품정보가 변경되었습니다"}, status=200)
+                except KeyError:
+                    return JsonResponse({'error': '올바르지 않은 키 값'}, status=400)
+            return JsonResponse({'error': '제한된 서비스'}, status=400)
+
 
 class CreateProduct(View):
-    @member_verification
+    @ member_verification
     def post(self, request):
         data = json.loads(request.body)
         user = request.user
@@ -68,7 +88,7 @@ class CreateProduct(View):
 
 
 class DeleteProduct(View):
-    @member_verification
+    @ member_verification
     def delete(self, request, product_id):
         user = request.user
         if User.objects.filter(username=user).exists():

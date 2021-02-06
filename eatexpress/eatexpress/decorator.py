@@ -14,10 +14,14 @@ def member_verification(func):
             try:
                 payload = jwt.decode(
                     token_from_Front, SECRET_KEY, algorithms=HASH)
-                print(payload, 'payload')
-                user = User.objects.get(pk=payload['user_id'])
+                user_id = payload['user_id']
+                #print(payload, 'payload')
+                user = User.objects.get(pk=user_id)
+
                 # 로그인한 회원만 이용할수 있는 서비스의 view에 쓰일 변수.
                 request.user = user
+                request.userid = payload['user_id']
+                print(request.user, request.userid)
 
             except jwt.DecodeError:
                 return JsonResponse({"message": "올바르지 않은 토큰"}, status=401)
