@@ -15,7 +15,7 @@ def member_verification(func):
                 payload = jwt.decode(
                     token_from_Front, SECRET_KEY, algorithms=HASH)
                 print(payload, 'payload')
-                user = User.objects.get(email=payload['email'])
+                user = User.objects.get(pk=payload['user_id'])
                 # 로그인한 회원만 이용할수 있는 서비스의 view에 쓰일 변수.
                 request.user = user
 

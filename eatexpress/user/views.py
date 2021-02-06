@@ -52,7 +52,7 @@ class LogIn(View):
 
                 if bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8')):
                     token = jwt.encode(
-                        {'email': data['email']}, SECRET_KEY, algorithm="HS256")
+                        {'user_id': user.id}, SECRET_KEY, algorithm=HASH)
                     # token = token.decode('utf-8')
 
                     return JsonResponse({"token": token}, status=200)
