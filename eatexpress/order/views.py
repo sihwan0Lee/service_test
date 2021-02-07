@@ -57,26 +57,30 @@ class OrderMake(View):
 class OrderListView(View):
     @member_verification
     def get(self, request, order_id):
+        """
+        검증된 유저의 username_id를 통해서 그와 일치하는 주문을 불러냅니다.
+        order_id : 검증된 username_id의 주문아이디와 비교될 입력값.
+        """
         user_s_id = request.userid
-        if Order.objects.filter(username_id=user_s_id).exists():  # 검증된 회원의 장바구니가 존재한다면
-            username_id = Order.objects.get(username_id=user_s_id)
+        if Order.objects.filter(username_id=user_s_id).exists():
+            username_id = Order.objects.get(username_id=user_s_id).username_id
+            # 입력받은 order_id의 username_id
             if Order.objects.filter(id=order_id).exists():
                 username_id_intable = Order.objects.get(
                     id=order_id).username_id
                 if username_id == username_id_intable:
-                    #   infos = OrderProduct.objects.filter(
-                    #      order_id=order_id).values()
-                    # orderinfo = [
-                    #  {
-
-                    #     'order_id': info.order_id,
-                    #    'product_id': info.product_id,
-                    #   'quantity': info.quantity
-                    # }for info in infos
-                    # ]
-                    return JsonResponse({'orderinfo': "일치"}, status=200)
-                return JsonResponse({'error': "본인과 일치하는 장바구니가 없습니다"}, status=400)
-            return JsonResponse({'error': "장바구니를 확인해주세요"}, status=400)
+                    infos = OrderProduct.objects.filter(
+                        order_id=order_id).values()
+                    orderinfo = [
+                        {'id': info['id'],
+                            'order_id': info['id'],
+                            'product_id': info['product_id'],
+                            'quantity': info['quantity']
+                         }for info in infos
+                    ]
+                    return JsonResponse({'orderinfo': orderinfo}, status=200)
+                return JsonResponse({'error': username_id_intable}, status=400)
+            return JsonResponse({'error': "본인의 주문내역만 확인가능합니다."}, status=400)
         return JsonResponse({'error': "검증되지 않음."}, status=400)
         #   if user.level == 'admin':
 
