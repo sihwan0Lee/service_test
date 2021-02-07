@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'user',
     'product',
     'order',
-    'rest_framework_swagger',
     'drf_yasg',
 ]
 
