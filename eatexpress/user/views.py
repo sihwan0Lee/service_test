@@ -19,6 +19,8 @@ class CreateAccount(View):
         try:
             if User.objects.filter(email=data['email']).exists():
                 return JsonResponse({"message": "이미 존재하는 이메일입니다"}, status=400)
+            if User.objects.filter(nickname=data['nickname']).exists():
+                return JsonResponse({"message": "이미 존재하는 닉네임입니다"}, status=400)
 
             password_crypt = bcrypt.hashpw(
                 data['password'].encode('utf-8'), bcrypt.gensalt())
@@ -27,6 +29,7 @@ class CreateAccount(View):
             new_user = User(
                 # abstractuser 기본제공하는 username
                 username=data['username'],
+                nickname=data['nickname'],
                 email=data['email'],
                 password=password_crypt,
                 phone_number=data['phone_number'],
@@ -79,12 +82,13 @@ class Myinfo(View):
         try:
             data = json.loads(request.body)
             username = data['username']
+            nickname = data['nickname']
             # password=password_crypt,
             phone_number = data['phone_number']
             address = data['address']
             if User.objects.filter(id=user_id).exists():
                 User.objects.filter(id=user_id).update(
-                    username=username, phone_number=phone_number, address=address)
+                    username=username, nickname=nickname, phone_number=phone_number, address=address)
                 return JsonResponse({"message": "유저정보가 변경되었습니다"}, status=200)
         except KeyError:
             return JsonResponse({'error': '올바르지 않은 키 값'}, status=400)

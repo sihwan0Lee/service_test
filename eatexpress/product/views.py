@@ -84,7 +84,7 @@ class CreateProduct(View):
 
                 except KeyError:
                     return JsonResponse({'error': '올바르지 않은 키 값'}, status=401)
-        return JsonResponse({"message": "you are not admin"}, status=401)
+        return JsonResponse({"message": "제한된 서비스"}, status=401)
 
 
 class DeleteProduct(View):
@@ -97,4 +97,5 @@ class DeleteProduct(View):
                 if Product.objects.filter(id=product_id).exists():
                     Product.objects.get(id=product_id).delete()
                     return JsonResponse({'message': "제품 삭제 완료"}, status=200)
+                return JsonResponse({'error': '존재하지않는 상품'}, status=400)
             return JsonResponse({'error': '제한된 서비스'}, status=400)
