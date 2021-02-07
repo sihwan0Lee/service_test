@@ -82,7 +82,31 @@ class OrderListView(View):
                 return JsonResponse({'error': username_id_intable}, status=400)
             return JsonResponse({'error': "본인의 주문내역만 확인가능합니다."}, status=400)
         return JsonResponse({'error': "검증되지 않음."}, status=400)
-        #   if user.level == 'admin':
+
+
+class AdminOrderListView(View):
+    @member_verification
+    def get(self, request, order_id):
+        """
+        product_id : 정보를 확인하려는 주문(장바구니)의 id
+        """
+
+        user = request.user
+        if User.objects.filter(username=user).exists():
+            if user.level == 'admin':
+                if Order.objects.filter(id=order_id).exists():
+                    infos = OrderProduct.objects.filter(
+                        order_id=order_id).values()
+                    orderinfo = [
+                        {'id': info['id'],
+                            'order_id': info['id'],
+                            'product_id': info['product_id'],
+                            'quantity': info['quantity']
+                         }for info in infos
+                    ]
+                    return JsonResponse({'orderinfo': orderinfo}, status=200)
+                return JsonResponse({'error': "존재하지 않는 주문"}, status=400)
+            return JsonResponse({'error': "제한된 서비스"}, status=400)
 
 
 class OrderDel(View):
