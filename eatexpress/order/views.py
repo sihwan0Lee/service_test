@@ -1,3 +1,6 @@
+"""
+주문하기, 주문확인, 주문삭제 기능이 담겨있습니다.
+"""
 import json
 
 from django.shortcuts import render
@@ -14,6 +17,11 @@ from eatexpress.decorator import member_verification
 class OrderMake(View):
     @member_verification
     def post(self, request, order_id, product_id):
+        """
+        주문을 생성합니다.
+        order_id : 입력받은 order_id를 이용하여 검증된 유저의 장바구니 여부를 확인합니다.
+        product_id : 개별적으로 주문을하고 장바구니에 담길 상품의 id입니다.
+        """
         data = json.loads(request.body)
         user_id = request.userid
         try:
@@ -76,8 +84,12 @@ class OrderListView(View):
 class OrderDel(View):
     @ member_verification
     def post(self, request, order_id):
+        """
+        주문을 삭제합니다.
+        인증된 유저아이디와 오더테이블의 유저네임 아이디가 같을때, 내 주문정보만을 가져올수 있게됩니다.
+        order_id : 삭제할 장바구니의 id
+        """
         user_s_id = request.userid
-        # 인증된 유저아이디와 오더테이블의 유저네임 아이디가 같을때, 내 주문정보만을 가져올수 있게됌.
         try:
             user_id = Order.objects.get(id=order_id).username_id
             if user_s_id == user_id:

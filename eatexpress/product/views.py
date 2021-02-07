@@ -1,3 +1,6 @@
+"""
+상품의 등록, 상품확인, 상품수정, 상품삭제 뷰들이 담겨있습니다.
+"""
 import json
 
 from django.shortcuts import render
@@ -15,6 +18,10 @@ from eatexpress.decorator import member_verification
 class ProductInfo(View):
     @member_verification
     def get(self, request, product_id):
+        """
+        product_id : 정보를 확인하려는 상품의 id
+        """
+
         user = request.user
         if User.objects.filter(username=user).exists():
             if user.level == 'admin':
@@ -38,6 +45,11 @@ class ProductInfo(View):
 
     @member_verification
     def post(self, request, product_id):
+        """
+        상품의 정보를 수정합니다.
+        product_id : 정보를 변경하고자하는 상품의 ID
+        update()함수를 이용했습니다.
+        """
         user = request.user
         if User.objects.filter(username=user).exists():
             if user.level == 'admin':
@@ -60,6 +72,9 @@ class ProductInfo(View):
 class CreateProduct(View):
     @ member_verification
     def post(self, request):
+        """
+        상품을 등록합니다
+        """
         data = json.loads(request.body)
         user = request.user
         if User.objects.filter(username=user).exists():
@@ -90,6 +105,10 @@ class CreateProduct(View):
 class DeleteProduct(View):
     @ member_verification
     def delete(self, request, product_id):
+        """
+        상품을 삭제합니다.
+        product_id : 삭제할 상품의 id
+        """
         user = request.user
         if User.objects.filter(username=user).exists():
             if user.level == 'admin':
