@@ -6,8 +6,8 @@ class Product(models.Model):
     manufacturer = models.CharField(max_length=100, verbose_name='제조사')
     stock = models.IntegerField(verbose_name='재고수량')
     unit_price = models.IntegerField(verbose_name='단가')
-    expiration_date = models.CharField(
-        max_length=200, verbose_name='유통기한', null=True, blank=True)
+    expiration_date = models.DateTimeField(
+        auto_now_add=True, verbose_name='유통기한')
 
     def __str__(self):
         return self.name
