@@ -1,4 +1,4 @@
-# wehuddling_coding_test
+# _coding_test
 코딩과제 기간 약 4일간 진행한 '백엔드' 서비스 프로젝트 입니다.
 
 
