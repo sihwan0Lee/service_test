@@ -11,7 +11,7 @@ class User(AbstractUser):
     nickname = models.CharField(
         max_length=45, unique=True, verbose_name='회원이름')
     email = models.EmailField(
-        max_length=200, unique=True, verbose_name='이메일')
+        max_length=50, unique=True, verbose_name='이메일')
     password = models.CharField(max_length=100, verbose_name='비밀번호')
     phone_number = models.CharField(
         max_length=50, unique=True,  verbose_name='전화번호')
