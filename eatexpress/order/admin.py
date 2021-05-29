@@ -10,9 +10,10 @@ class OrderAdmin(admin.ModelAdmin):
                     'total_price', 'ordered_date',)
 
 
+@admin.register(OrderProduct)
 class OrderProductAdmin(admin.ModelAdmin):
-    list_display = ('order', 'product', 'quantity',)
+    list_display = ['order', 'product', 'quantity']
+    list_display_links = ['order', 'product']
 
 
 admin.site.register(Order, OrderAdmin)
-admin.site.register(OrderProduct, OrderProductAdmin)
